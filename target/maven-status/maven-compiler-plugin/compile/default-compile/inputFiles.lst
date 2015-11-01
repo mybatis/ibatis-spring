@@ -1,0 +1,11 @@
+/home/eduardo/workspace/ibatis-spring/src/main/java/org/springframework/orm/ibatis/SqlMapClientTemplate.java
+/home/eduardo/workspace/ibatis-spring/src/main/java/org/springframework/orm/ibatis/support/SqlMapClientDaoSupport.java
+/home/eduardo/workspace/ibatis-spring/src/main/java/org/springframework/orm/ibatis/package-info.java
+/home/eduardo/workspace/ibatis-spring/src/main/java/org/springframework/orm/ibatis/support/package-info.java
+/home/eduardo/workspace/ibatis-spring/src/main/java/org/springframework/orm/ibatis/support/AbstractLobTypeHandler.java
+/home/eduardo/workspace/ibatis-spring/src/main/java/org/springframework/orm/ibatis/SqlMapClientOperations.java
+/home/eduardo/workspace/ibatis-spring/src/main/java/org/springframework/orm/ibatis/SqlMapClientCallback.java
+/home/eduardo/workspace/ibatis-spring/src/main/java/org/springframework/orm/ibatis/support/BlobSerializableTypeHandler.java
+/home/eduardo/workspace/ibatis-spring/src/main/java/org/springframework/orm/ibatis/support/ClobStringTypeHandler.java
+/home/eduardo/workspace/ibatis-spring/src/main/java/org/springframework/orm/ibatis/SqlMapClientFactoryBean.java
+/home/eduardo/workspace/ibatis-spring/src/main/java/org/springframework/orm/ibatis/support/BlobByteArrayTypeHandler.java
