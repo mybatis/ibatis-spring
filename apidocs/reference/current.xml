@@ -1,0 +1,22 @@
+<api>
+<package name="org.ibatis.spring"
+>
+<class name="Ibatis2Support"
+ extends="java.lang.Object"
+ abstract="false"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+<constructor name="Ibatis2Support"
+ type="org.ibatis.spring.Ibatis2Support"
+ static="false"
+ final="false"
+ deprecated="not deprecated"
+ visibility="public"
+>
+</constructor>
+</class>
+</package>
+</api>
