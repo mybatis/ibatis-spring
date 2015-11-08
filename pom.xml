@@ -20,316 +20,99 @@
   <parent>
     <groupId>org.mybatis</groupId>
     <artifactId>mybatis-parent</artifactId>
-    <version>24</version>
+    <version>26</version>
+    <relativePath />
   </parent>
 
   <artifactId>mybatis-2-spring</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>mybatis-2-spring</name>
-  <url>http://www.mybatis.org/spring/</url>
+  <description>An easy-to-use Spring bridge for MyBatis 2 sql mapping framework. Ibatis code copied from Spring 3.2.x branch.</description>
+  <url>http://mybatis.github.io/ibatis-spring/</url>
 
   <contributors>
-
     <contributor>
-      <name>Alex Rykov</name>
-      <email>Alex.Rykov@gmail.com</email>
+      <name>Eduardo Macarron</name>
+      <email>eduardo.macarron@gmail.com</email>
     </contributor>
-  
     <contributor>
-      <name>Andrius Juozapaitis</name>
-      <email>andriusj@gmail.com</email>
-    </contributor>
-
-    <contributor>
-      <name>Giovanni Cuccu</name>
-      <email>giovanni.cuccu@gmail.com</email>
-    </contributor>
-
-    <contributor>
-      <name>Kay Huber</name>
-      <email>kay.huber@gmail.com</email>
-    </contributor>
-
-    <contributor>
-      <name>Lishu Luo</name>
-      <email>lishu.luo@gmail.com</email>
-    </contributor>
-
-    <contributor>
-      <name>Michael Lanyon</name>
-      <email>lanyonm@gmail.com</email>
-    </contributor>
-
-    <contributor>
-      <name>Raj Nagappan</name>
-      <email>raj@velocitylabs.com</email>
-    </contributor>
-
-    <contributor>
-      <name>Tomáš Piňos</name>
-      <email>tomas.pinos@gmail.com</email>
+      <name>Jeremy Landis</name>
+      <email>jeremylandis@hotmail.com</email>
     </contributor>
   </contributors>
 
   <scm>
-    <url>http://github.com/mybatis/spring</url>
-    <connection>scm:git:ssh://github.com/mybatis/spring.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/mybatis/spring.git</developerConnection>
+    <url>http://github.com/mybatis/ibatis-spring</url>
+    <connection>scm:git:ssh://github.com/mybatis/ibatis-spring.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/mybatis/ibatis-spring.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
     <system>GitHub Issue Management</system>
-    <url>https://github.com/mybatis/spring/issues</url>
+    <url>https://github.com/mybatis/ibatis-spring/issues</url>
   </issueManagement>
   <ciManagement>
     <system>Travis CI</system>
-    <url>https://travis-ci.org/mybatis/spring</url>
+    <url>https://travis-ci.org/mybatis/ibatis-spring</url>
   </ciManagement>
   <distributionManagement>
     <site>
-      <id>github</id>
-      <url>gitsite:git@github.com/mybatis/spring.git</url>
+      <id>gh-pages</id>
+      <name>Mybatis GitHub Pages</name>
+      <url>git:ssh://git@github.com/mybatis/ibatis-spring.git?gh-pages#</url>
     </site>
   </distributionManagement>
 
   <properties>
-    <clirr.comparisonVersion>1.2.2</clirr.comparisonVersion>
-    <findbugs.onlyAnalyze>org.mybatis.spring.*,org.mybatis.spring.mapper.*,org.mybatis.spring.support.*,org.mybatis.spring.transaction.*</findbugs.onlyAnalyze>
-    <gcu.product>Spring</gcu.product>
-    <osgi.import>org.springframework.batch.*;resolution:=optional,*</osgi.import>
-    <osgi.dynamicImport>*</osgi.dynamicImport>
-    <spring.version>3.2.13.RELEASE</spring.version>
+    <spring.version>3.2.15.RELEASE</spring.version>
   </properties>
 
   <dependencies>
-    <!-- Compile dependencies -->
-    <dependency>
-      <groupId>org.mybatis</groupId>
-      <artifactId>mybatis</artifactId>
-      <version>2.3.5</version>
-    </dependency>
-
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
+      <artifactId>spring-orm</artifactId>
       <version>${spring.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-jdbc</artifactId>
-      <version>${spring.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework.batch</groupId>
-      <artifactId>spring-batch-infrastructure</artifactId>
-      <version>3.0.4.RELEASE</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Test dependencies -->
-
-    <dependency>
-      <groupId>com.atomikos</groupId>
-      <artifactId>transactions-jdbc</artifactId>
-      <version>3.9.3</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.derby</groupId>
-      <artifactId>derby</artifactId>
-      <version>10.11.1.1</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>ognl</groupId>
-      <artifactId>ognl</artifactId>
-      <version>3.0.11</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>cglib</groupId>
-      <artifactId>cglib</artifactId>
-      <version>3.1</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.byteman</groupId>
-      <artifactId>byteman-bmunit</artifactId>
-      <version>3.0.1</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <version>${spring.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <version>2.3.2</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
-      <scope>test</scope>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>1.10.19</version>
-      <scope>test</scope>
-    </dependency>    
-
-    <!-- Using version 1.0.1, versions higher require only jdk7 -->
-    <dependency>
-      <groupId>com.mockrunner</groupId>
-      <artifactId>mockrunner-core</artifactId>
-      <version>1.0.1</version>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </exclusion>
-        <exclusion>
-            <groupId>com.kirkk</groupId>
-            <artifactId>jaranalyzer</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>jdom</groupId>
-          <artifactId>jdom</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>nekohtml</groupId>
-          <artifactId>nekohtml</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.mockrunner</groupId>
-      <artifactId>mockrunner-ejb</artifactId>
-      <version>1.0.1</version>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-beanutils</groupId>
-          <artifactId>commons-beanutils</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.mockejb</groupId>
-          <artifactId>mockejb</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.mockrunner</groupId>
-      <artifactId>mockrunner-jdbc</artifactId>
-      <version>1.0.1</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.transaction</groupId>
-      <artifactId>transaction-api</artifactId>
-      <version>1.1</version>
-      <scope>test</scope>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <systemProperties>
-            <property>
-              <name>derby.stream.error.file</name>
-              <value>target/derby.log</value>
-            </property>
-        </systemProperties>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <configuration>
-          <locales>en,es,zh_CN,ja,ko</locales>
-        </configuration>
-      </plugin>
-    </plugins>
-
-    <resources>
-      <resource>
-        <directory>${project.basedir}</directory>
-        <targetPath>META-INF</targetPath>
-        <includes>
-          <include>LICENSE</include>
-          <include>NOTICE</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${project.build.sourceDirectory}</directory>
-        <excludes>
-          <exclude>**/*.java</exclude>
-        </excludes>
-      </resource>
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>${project.build.testSourceDirectory}</directory>
-        <excludes>
-          <exclude>**/*.java</exclude>
-        </excludes>
-      </testResource>
-    </testResources>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <createSourcesJar>true</createSourcesJar>
+              <shadeSourcesContent>true</shadeSourcesContent>
+              <artifactSet>
+                <includes>
+                  <include>org.springframework:spring-orm</include>
+                </includes>
+              </artifactSet>
+              <filters>
+                <filter>
+                  <artifact>org.springframework:spring-orm</artifact>
+                    <includes>
+                      <include>org/springframework/orm/ibatis/**</include>
+                      <include>META-INF/license.txt</include>
+                      <include>META-INF/notice.txt</include>
+                    </includes>
+                  </filter>
+                </filters>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
   </build>
 
-  <!-- TODO: Why is this necessary, the dependency is already present at this scope? -->
-  <!-- this is just a turn-around to Mac compilers -->
-  <profiles>
-    <profile>
-      <id>mac-jvm-classloader-issue</id>
-      <activation>
-        <os>
-          <family>mac</family>
-        </os>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>oro</groupId>
-          <artifactId>oro</artifactId>
-          <version>2.0.8</version>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
-
-  <description>Ibatis code copied from Spring 3.2.x branch.</description>
 </project>
