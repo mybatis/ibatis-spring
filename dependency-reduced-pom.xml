@@ -79,7 +79,7 @@
     </site>
   </distributionManagement>
   <properties>
-    <spring.version>3.2.15.RELEASE</spring.version>
+    <spring.version>3.2.17.RELEASE</spring.version>
   </properties>
 </project>
 
