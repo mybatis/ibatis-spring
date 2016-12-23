@@ -3,13 +3,13 @@
   <parent>
     <artifactId>mybatis-parent</artifactId>
     <groupId>org.mybatis</groupId>
-    <version>27</version>
+    <version>28</version>
     <relativePath>pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>mybatis-2-spring</artifactId>
   <name>mybatis-2-spring</name>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.3-SNAPSHOT</version>
   <description>An easy-to-use Spring bridge for MyBatis 2 sql mapping framework. Ibatis code copied from Spring 3.2.x branch.</description>
   <url>http://mybatis.github.io/ibatis-spring/</url>
   <issueManagement>
@@ -79,7 +79,7 @@
     </site>
   </distributionManagement>
   <properties>
-    <spring.version>3.2.17.RELEASE</spring.version>
+    <spring.version>3.2.18.RELEASE</spring.version>
   </properties>
 </project>
 
