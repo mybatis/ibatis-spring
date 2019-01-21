@@ -2,7 +2,6 @@ ibatis spring
 =============
 
 [![Build Status](https://travis-ci.org/mybatis/ibatis-spring.svg?branch=master)](https://travis-ci.org/mybatis/ibatis-spring)
-[![Dependency Status](https://www.versioneye.com/user/projects/571ba2e5fcd19a00518565f2/badge.svg?style=flat)](https://www.versioneye.com/user/projects/571ba2e5fcd19a00518565f2)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/org.mybatis/mybatis-2-spring/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.mybatis/mybatis-2-spring)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
