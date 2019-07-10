@@ -72,6 +72,8 @@
   <properties>
     <maven.compiler.source>1.6</maven.compiler.source>
     <maven.compiler.target>1.6</maven.compiler.target>
+    <signature.artifact>java16</signature.artifact>
+    <signature.version>1.1</signature.version>
     <clirr.comparisonVersion>1.0.2</clirr.comparisonVersion>
     <spring.version>3.2.18.RELEASE</spring.version>
     <module.name>org.mybatis.spring.mybatis2</module.name>
