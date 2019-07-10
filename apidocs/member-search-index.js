@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"org.ibatis.spring","c":"Ibatis2Support","l":"Ibatis2Support()","url":"%3Cinit%3E()"}]
