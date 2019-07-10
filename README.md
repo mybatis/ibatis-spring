@@ -8,6 +8,6 @@ ibatis spring
 ![mybatis](http://mybatis.github.io/images/mybatis-logo.png)
 
 The Mybatis 'ibatis-spring' module is a copy from spring 3.2.x as a shaded module in order to allow users using ibatis to 
-freely upgrade to spring4 without having a hard dependency on upgrading ibatis in the process.
+freely upgrade to spring4+ without having a hard dependency on upgrading ibatis in the process.
 
-This repository is read-only. Consider upgrading to [MyBatis](https://github.com/mybatis/mybatis-3).
+This repository is read-only. Consider upgrading to [MyBatis](https://github.com/mybatis/mybatis-3) with [MybatisSpring](https://github.com/mybatis/spring).
