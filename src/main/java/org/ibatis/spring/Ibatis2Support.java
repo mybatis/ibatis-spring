@@ -21,5 +21,5 @@ package org.ibatis.spring;
  * other libraries.
  */
 public class Ibatis2Support {
-  // Not additional support provided.
+  // No additional support provided.
 }
