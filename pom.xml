@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-       Copyright 2015-2019 the original author or authors.
+       Copyright 2015-2020 the original author or authors.
 
        Licensed under the Apache License, Version 2.0 (the "License");
        you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.mybatis</groupId>
     <artifactId>mybatis-parent</artifactId>
-    <version>31</version>
+    <version>32</version>
     <relativePath />
   </parent>
 
@@ -70,10 +70,10 @@
   </distributionManagement>
 
   <properties>
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
-    <signature.artifact>java16</signature.artifact>
-    <signature.version>1.1</signature.version>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+    <signature.artifact>java17</signature.artifact>
+    <signature.version>1.0</signature.version>
     <clirr.comparisonVersion>1.0.2</clirr.comparisonVersion>
     <spring.version>3.2.18.RELEASE</spring.version>
     <module.name>org.mybatis.spring.mybatis2</module.name>
