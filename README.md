@@ -1,7 +1,7 @@
 ibatis spring
 =============
 
-[![Build Status](https://travis-ci.org/mybatis/ibatis-spring.svg?branch=master)](https://travis-ci.org/mybatis/ibatis-spring)
+[![Java CI](https://github.com/mybatis/ibatis-spring/actions/workflows/ci.yaml/badge.svg)](https://github.com/mybatis/ibatis-spring/actions/workflows/ci.yaml)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/org.mybatis/mybatis-2-spring/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.mybatis/mybatis-2-spring)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
