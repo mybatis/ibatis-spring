@@ -3,7 +3,7 @@ ibatis spring
 
 [![Java CI](https://github.com/mybatis/ibatis-spring/actions/workflows/ci.yaml/badge.svg)](https://github.com/mybatis/ibatis-spring/actions/workflows/ci.yaml)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/org.mybatis/mybatis-2-spring/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.mybatis/mybatis-2-spring)
-[![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 ![mybatis](http://mybatis.github.io/images/mybatis-logo.png)
 
