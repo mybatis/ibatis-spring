@@ -32,7 +32,7 @@
 
   <name>mybatis-2-spring</name>
   <description>An easy-to-use Spring bridge for MyBatis 2 sql mapping framework. Ibatis code copied from Spring 3.2.x branch.</description>
-  <url>http://mybatis.github.io/ibatis-spring/</url>
+  <url>https://mybatis.org/ibatis-spring/</url>
 
   <inceptionYear>2015</inceptionYear>
 
