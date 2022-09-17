@@ -78,6 +78,9 @@
     <spring.version>3.2.18.RELEASE</spring.version>
 
     <module.name>org.mybatis.spring.mybatis2</module.name>
+
+    <!-- Reproducible Builds -->
+    <project.build.outputTimestamp>1757561022</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
