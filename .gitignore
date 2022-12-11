@@ -10,3 +10,5 @@ target
 
 dependency-reduced-pom.xml
 .mvn/wrapper/maven-wrapper.jar
+*.releaseBackup
+release.properties
