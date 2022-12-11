@@ -70,8 +70,8 @@
   </distributionManagement>
 
   <properties>
-    <java.version>7</java.version>
-    <java.release.version>7</java.release.version>
+    <java.version>8</java.version>
+    <java.release.version>8</java.release.version>
 
     <clirr.comparisonVersion>1.0.2</clirr.comparisonVersion>
 
