@@ -23,7 +23,7 @@
     <groupId>org.mybatis</groupId>
     <artifactId>mybatis-parent</artifactId>
     <version>39</version>
-    <relativePath />
+    <relativePath/>
   </parent>
 
   <artifactId>mybatis-2-spring</artifactId>
@@ -48,10 +48,10 @@
   </contributors>
 
   <scm>
-    <url>http://github.com/mybatis/ibatis-spring</url>
     <connection>scm:git:ssh://git@github.com/mybatis/ibatis-spring.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mybatis/ibatis-spring.git</developerConnection>
     <tag>HEAD</tag>
+    <url>http://github.com/mybatis/ibatis-spring</url>
   </scm>
   <issueManagement>
     <system>GitHub Issue Management</system>
@@ -106,10 +106,10 @@
         <artifactId>maven-shade-plugin</artifactId>
         <executions>
           <execution>
-            <phase>package</phase>
             <goals>
               <goal>shade</goal>
             </goals>
+            <phase>package</phase>
             <configuration>
               <createDependencyReducedPom>true</createDependencyReducedPom>
               <createSourcesJar>true</createSourcesJar>
@@ -122,18 +122,18 @@
               <filters>
                 <filter>
                   <artifact>org.springframework:spring-orm</artifact>
-                    <includes>
-                      <include>org/springframework/orm/ibatis/**</include>
-                      <include>META-INF/license.txt</include>
-                      <include>META-INF/notice.txt</include>
-                    </includes>
-                  </filter>
-                </filters>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
+                  <includes>
+                    <include>org/springframework/orm/ibatis/**</include>
+                    <include>META-INF/license.txt</include>
+                    <include>META-INF/notice.txt</include>
+                  </includes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
 </project>
