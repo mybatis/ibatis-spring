@@ -5,6 +5,8 @@
 .settings
 target
 
+.github/keys/
+
 *.iml
 *.idea/
 
