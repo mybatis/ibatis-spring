@@ -13,15 +13,8 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.ibatis.spring;
-
 /**
- * Ibatis2Support provided by mybatis includes native Spring iBATIS integration classes (sourced from Spring 3.2.x and
- * updated for modern Spring compatibility) to allow users of iBATIS to freely upgrade to Spring 5+ without being forced
- * to simultaneously upgrade to MyBatis. This is meant as a bridge to eventually migrating to MyBatis.
- * <p>
- * The core integration classes are located under {@code org.springframework.orm.ibatis}.
+ * Classes supporting the {@code org.springframework.orm.ibatis} package. Contains a DAO base class for
+ * SqlMapClientTemplate usage.
  */
-public class Ibatis2Support {
-  // No additional support provided.
-}
+package org.springframework.orm.ibatis.support;
