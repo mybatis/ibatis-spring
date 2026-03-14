@@ -231,9 +231,10 @@ public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>, Initi
    * typical scenario. If there is no active transaction, SqlMapClient operations will execute SQL statements
    * non-transactionally.
    * <p>
-   * JdbcTransactionConfig or JtaTransactionConfig is only necessary when using the iBATIS SqlMapTransactionManager API
-   * instead of external transactions. If there is no explicit transaction, SqlMapClient operations will automatically
-   * start a transaction for their own scope (in contrast to the external transaction mode, see above).
+   * JdbcTransactionConfig or JakartaTransactionConfig/JavaxTransactionConfig is only necessary when using the iBATIS
+   * SqlMapTransactionManager API instead of external transactions. If there is no explicit transaction, SqlMapClient
+   * operations will automatically start a transaction for their own scope (in contrast to the external transaction
+   * mode, see above).
    * <p>
    * <b>It is strongly recommended to use iBATIS SQL Maps with Spring transaction management (or EJB CMT).</b> In this
    * case, the default ExternalTransactionConfig is fine. Lazy loading and SQL Maps operations without explicit
@@ -251,7 +252,8 @@ public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>, Initi
    * @see com.ibatis.sqlmap.engine.transaction.TransactionConfig
    * @see com.ibatis.sqlmap.engine.transaction.external.ExternalTransactionConfig
    * @see com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig
-   * @see com.ibatis.sqlmap.engine.transaction.jta.JtaTransactionConfig
+   * @see com.ibatis.sqlmap.engine.transaction.jta.JakartaTransactionConfig
+   * @see com.ibatis.sqlmap.engine.transaction.jta.JavaxTransactionConfig
    * @see com.ibatis.sqlmap.client.SqlMapTransactionManager
    */
   public void setTransactionConfigClass(Class<? extends TransactionConfig> transactionConfigClass) {
@@ -271,8 +273,9 @@ public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>, Initi
    * (default: true). Note that Spring uses SetAutoCommitAllowed = false as default, in contrast to the iBATIS default,
    * to always keep the original autoCommit value as provided by the connection pool.
    * <li><b>JdbcTransactionConfig</b> does not supported any properties.
-   * <li><b>JtaTransactionConfig</b> supports "UserTransaction" (no default), specifying the JNDI location of the JTA
-   * UserTransaction (usually "java:comp/UserTransaction").
+   * <li><b>JakartaTransactionConfig</b> (jakarta namespace) and <b>JavaxTransactionConfig</b> (javax namespace) both
+   * support "UserTransaction" (no default), specifying the JNDI location of the JTA UserTransaction (usually
+   * "java:comp/UserTransaction").
    * </ul>
    *
    * @param transactionConfigProperties
@@ -281,7 +284,8 @@ public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>, Initi
    * @see com.ibatis.sqlmap.engine.transaction.TransactionConfig#initialize
    * @see com.ibatis.sqlmap.engine.transaction.external.ExternalTransactionConfig
    * @see com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig
-   * @see com.ibatis.sqlmap.engine.transaction.jta.JtaTransactionConfig
+   * @see com.ibatis.sqlmap.engine.transaction.jta.JakartaTransactionConfig
+   * @see com.ibatis.sqlmap.engine.transaction.jta.JavaxTransactionConfig
    */
   public void setTransactionConfigProperties(Properties transactionConfigProperties) {
     this.transactionConfigProperties = transactionConfigProperties;
