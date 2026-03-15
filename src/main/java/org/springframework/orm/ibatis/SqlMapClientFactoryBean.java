@@ -410,7 +410,6 @@ public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>, Initi
           + "ExtendedSqlMapClient: " + sqlMapClient);
     }
     ExtendedSqlMapClient extendedClient = (ExtendedSqlMapClient) sqlMapClient;
-    transactionConfig.setMaximumConcurrentTransactions(extendedClient.getDelegate().getMaxTransactions());
     extendedClient.getDelegate().setTxManager(new TransactionManager(transactionConfig));
   }
 
