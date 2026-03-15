@@ -326,7 +326,7 @@ public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>, Initi
           dataSourceToUse = new TransactionAwareDataSourceProxy(this.dataSource);
         }
         transactionConfig.setDataSource(dataSourceToUse);
-        transactionConfig.initialize(this.transactionConfigProperties);
+        transactionConfig.setProperties(this.transactionConfigProperties);
         applyTransactionConfig(this.sqlMapClient, transactionConfig);
       }
     } finally {
