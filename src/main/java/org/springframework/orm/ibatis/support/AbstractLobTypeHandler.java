@@ -153,7 +153,7 @@ public abstract class AbstractLobTypeHandler extends BaseTypeHandler {
    * @param value
    *          the parameter value to set
    * @param jdbcType
-   *          the JDBC type of the parameter
+   *          the JDBC type of the parameter (as supplied by iBATIS)
    * @param lobCreator
    *          the LobCreator to use
    *
@@ -164,6 +164,20 @@ public abstract class AbstractLobTypeHandler extends BaseTypeHandler {
    */
   protected abstract void setParameterInternal(PreparedStatement ps, int index, Object value, String jdbcType,
       LobCreator lobCreator) throws SQLException, IOException;
+
+  /**
+   * Resolve the JDBC type name as passed in to {@link #setParameterInternal(PreparedStatement, int, Object, String, LobCreator)}.
+   * <p>
+   * Subclasses may use this method to normalize or validate the provided JDBC type before applying it to the
+   * underlying {@link PreparedStatement}.
+   *
+   * @param jdbcType
+   *          the JDBC type of the parameter, as provided by iBATIS
+   * @return the resolved JDBC type (never {@code null}, empty if no type specified)
+   */
+  protected String resolveJdbcType(String jdbcType) {
+    return (jdbcType != null ? jdbcType : "");
+  }
 
   /**
    * Template method to extract a value from the given result set.
