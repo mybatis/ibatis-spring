@@ -2,6 +2,7 @@ ibatis spring
 =============
 
 [![Java CI](https://github.com/mybatis/ibatis-spring/actions/workflows/ci.yaml/badge.svg)](https://github.com/mybatis/ibatis-spring/actions/workflows/ci.yaml)
+[![Coverage Status](https://coveralls.io/repos/github/mybatis/ibatis-spring/badge.svg?branch=master)](https://coveralls.io/github/mybatis/ibatis-spring?branch=master)
 [![Maven Central](https://img.shields.io/maven-central/v/org.mybatis/mybatis-2-spring.svg)](https://central.sonatype.com/artifact/org.mybatis/mybatis-2-spring)
 [![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
