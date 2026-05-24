@@ -16,6 +16,8 @@
 package org.springframework.orm.ibatis;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,7 +32,9 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.jdbc.support.lob.LobHandler;
 
 /**
@@ -171,6 +175,116 @@ class SqlMapClientFactoryBeanTests {
     SqlMapClientFactoryBean factory = new SqlMapClientFactoryBean();
     factory.setConfigLocation(null);
     assertThrows(IllegalArgumentException.class, factory::afterPropertiesSet);
+  }
+
+  // ---- afterPropertiesSet integration tests (using real iBATIS XML) ----
+
+  @Test
+  void testAfterPropertiesSetWithMinimalConfig() throws Exception {
+    SqlMapClientFactoryBean factory = new SqlMapClientFactoryBean();
+    factory.setConfigLocation(new ClassPathResource("sql-map-config.xml"));
+    factory.afterPropertiesSet();
+    assertNotNull(factory.getObject());
+    assertEquals(factory.getObject().getClass(), factory.getObjectType());
+  }
+
+  @Test
+  void testAfterPropertiesSetWithDataSource() throws Exception {
+    SqlMapClientFactoryBean factory = new SqlMapClientFactoryBean();
+    factory.setConfigLocation(new ClassPathResource("sql-map-config.xml"));
+    DataSource ds = mock(DataSource.class);
+    factory.setDataSource(ds);
+    factory.afterPropertiesSet();
+    assertNotNull(factory.getObject());
+  }
+
+  @Test
+  void testAfterPropertiesSetWithTransactionAwareDataSourceWrapping() throws Exception {
+    SqlMapClientFactoryBean factory = new SqlMapClientFactoryBean();
+    factory.setConfigLocation(new ClassPathResource("sql-map-config.xml"));
+    DataSource ds = mock(DataSource.class);
+    factory.setDataSource(ds);
+    factory.setUseTransactionAwareDataSource(true);
+    factory.afterPropertiesSet();
+    assertNotNull(factory.getObject());
+  }
+
+  @Test
+  void testAfterPropertiesSetWithAlreadyWrappedDataSource() throws Exception {
+    SqlMapClientFactoryBean factory = new SqlMapClientFactoryBean();
+    factory.setConfigLocation(new ClassPathResource("sql-map-config.xml"));
+    DataSource ds = mock(DataSource.class);
+    TransactionAwareDataSourceProxy proxy = new TransactionAwareDataSourceProxy(ds);
+    factory.setDataSource(proxy);
+    factory.setUseTransactionAwareDataSource(true);
+    factory.afterPropertiesSet();
+    assertNotNull(factory.getObject());
+  }
+
+  @Test
+  void testAfterPropertiesSetWithMappingLocations() throws Exception {
+    SqlMapClientFactoryBean factory = new SqlMapClientFactoryBean();
+    factory.setConfigLocation(new ClassPathResource("sql-map-config.xml"));
+    factory.setMappingLocations(new Resource[] { new ClassPathResource("sql-map.xml") });
+    factory.afterPropertiesSet();
+    assertNotNull(factory.getObject());
+  }
+
+  @Test
+  void testAfterPropertiesSetWithLobHandler() throws Exception {
+    SqlMapClientFactoryBean factory = new SqlMapClientFactoryBean();
+    factory.setConfigLocation(new ClassPathResource("sql-map-config.xml"));
+    LobHandler lobHandler = mock(LobHandler.class);
+    factory.setLobHandler(lobHandler);
+    factory.afterPropertiesSet();
+    assertNotNull(factory.getObject());
+    // LobHandler holder must be cleaned up after init
+    assertNull(SqlMapClientFactoryBean.getConfigTimeLobHandler());
+  }
+
+  @Test
+  void testAfterPropertiesSetWithTransactionConfigProperties() throws Exception {
+    SqlMapClientFactoryBean factory = new SqlMapClientFactoryBean();
+    factory.setConfigLocation(new ClassPathResource("sql-map-config.xml"));
+    DataSource ds = mock(DataSource.class);
+    factory.setDataSource(ds);
+    Properties props = new Properties();
+    props.setProperty("DefaultAutoCommit", "true");
+    factory.setTransactionConfigProperties(props);
+    factory.afterPropertiesSet();
+    assertNotNull(factory.getObject());
+  }
+
+  // ---- applyTransactionConfig with non-extended client ----
+
+  @Test
+  void testApplyTransactionConfigWithNonExtendedClientThrows() {
+    SqlMapClientFactoryBean factory = new SqlMapClientFactoryBean();
+    SqlMapClient basicClient = mock(SqlMapClient.class);
+    TransactionConfig txConfig = mock(TransactionConfig.class);
+    assertThrows(IllegalArgumentException.class, () -> factory.applyTransactionConfig(basicClient, txConfig));
+  }
+
+  // ---- getObjectType after init ----
+
+  @Test
+  void testGetObjectTypeAfterInitReturnsConcreteClass() throws Exception {
+    SqlMapClientFactoryBean factory = new SqlMapClientFactoryBean();
+    factory.setConfigLocation(new ClassPathResource("sql-map-config.xml"));
+    factory.afterPropertiesSet();
+    assertNotSame(SqlMapClient.class, factory.getObjectType());
+    assertNotNull(factory.getObjectType());
+  }
+
+  // ---- getSqlMapClientProperties (setter/getter symmetry) ----
+
+  @Test
+  void testSetSqlMapClientPropertiesMultipleConfigs() throws Exception {
+    SqlMapClientFactoryBean factory = new SqlMapClientFactoryBean();
+    factory.setConfigLocations(
+        new Resource[] { new ClassPathResource("sql-map-config.xml"), new ClassPathResource("sql-map-config.xml") });
+    factory.afterPropertiesSet();
+    assertNotNull(factory.getObject());
   }
 
 }

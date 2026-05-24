@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -487,6 +488,29 @@ class SqlMapClientTests {
     assertNotNull(testDao.getSqlMapClientTemplate());
     testDao.afterPropertiesSet();
     assertEquals(client, testDao.getSqlMapClient());
+  }
+
+  @Test
+  void testExecuteConnectionCloseExceptionIsSwallowed() throws SQLException {
+    DataSource ds = mock(DataSource.class);
+    Connection con = mock(Connection.class);
+    SqlMapSession session = mock(SqlMapSession.class);
+    SqlMapClient client = mock(SqlMapClient.class);
+
+    given(ds.getConnection()).willReturn(con);
+    given(client.openSession()).willReturn(session);
+    // Make connection.close() throw so the catch(Throwable) path in execute() is exercised
+    willThrow(new RuntimeException("close failed")).given(con).close();
+
+    SqlMapClientTemplate template = new SqlMapClientTemplate();
+    template.setDataSource(ds);
+    template.setSqlMapClient(client);
+    template.afterPropertiesSet();
+
+    // The exception from close() must be swallowed (logged at debug level), not rethrown
+    Object result = template.execute(executor -> "done");
+    assertEquals("done", result);
+    verify(session).close();
   }
 
   private static class TestSqlMapClientTemplate extends SqlMapClientTemplate {

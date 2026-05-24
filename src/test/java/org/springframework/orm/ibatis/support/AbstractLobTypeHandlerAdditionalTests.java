@@ -20,11 +20,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
+import java.io.ByteArrayInputStream;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.support.lob.LobCreator;
 import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
@@ -88,6 +91,42 @@ class AbstractLobTypeHandlerAdditionalTests {
     LobHandler lobHandler = mock(LobHandler.class);
     ClobStringTypeHandler type = new ClobStringTypeHandler(lobHandler);
     assertEquals("CLOB", type.resolveJdbcType("CLOB"));
+  }
+
+  // ---- IOException in setParameter translated to SQLException ----
+
+  @Test
+  void testSetParameterIOExceptionWrappedAsSqlException() throws Exception {
+    LobHandler lobHandler = mock(LobHandler.class);
+    LobCreator lobCreator = mock(LobCreator.class);
+    org.mockito.BDDMockito.given(lobHandler.getLobCreator()).willReturn(lobCreator);
+
+    PreparedStatement ps = mock(PreparedStatement.class);
+    // Object is not Serializable, so serialization throws NotSerializableException (IOException subtype)
+    Object nonSerializable = new Object();
+
+    BlobSerializableTypeHandler type = new BlobSerializableTypeHandler(lobHandler);
+    TransactionSynchronizationManager.initSynchronization();
+    try {
+      assertThrows(SQLException.class, () -> type.setParameter(ps, 1, nonSerializable, null));
+    } finally {
+      TransactionSynchronizationManager.clearSynchronization();
+    }
+  }
+
+  // ---- IOException in getResult translated to SQLException ----
+
+  @Test
+  void testGetResultIOExceptionWrappedAsSqlException() throws Exception {
+    LobHandler lobHandler = mock(LobHandler.class);
+    ResultSet rs = mock(ResultSet.class);
+    // Corrupt bytes – not a valid Java serialization stream
+    byte[] invalidData = { 1, 2, 3 };
+    org.mockito.BDDMockito.given(lobHandler.getBlobAsBinaryStream(rs, 1))
+        .willReturn(new ByteArrayInputStream(invalidData));
+
+    BlobSerializableTypeHandler type = new BlobSerializableTypeHandler(lobHandler);
+    assertThrows(SQLException.class, () -> type.getResult(rs, 1));
   }
 
 }
