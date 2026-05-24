@@ -166,13 +166,15 @@ public abstract class AbstractLobTypeHandler extends BaseTypeHandler {
       LobCreator lobCreator) throws SQLException, IOException;
 
   /**
-   * Resolve the JDBC type name as passed in to {@link #setParameterInternal(PreparedStatement, int, Object, String, LobCreator)}.
+   * Resolve the JDBC type name as passed in to
+   * {@link #setParameterInternal(PreparedStatement, int, Object, String, LobCreator)}.
    * <p>
-   * Subclasses may use this method to normalize or validate the provided JDBC type before applying it to the
-   * underlying {@link PreparedStatement}.
+   * Subclasses may use this method to normalize or validate the provided JDBC type before applying it to the underlying
+   * {@link PreparedStatement}.
    *
    * @param jdbcType
    *          the JDBC type of the parameter, as provided by iBATIS
+   *
    * @return the resolved JDBC type (never {@code null}, empty if no type specified)
    */
   protected String resolveJdbcType(String jdbcType) {

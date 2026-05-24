@@ -16,10 +16,13 @@
 package org.springframework.orm.ibatis;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
@@ -38,7 +41,9 @@ import javax.sql.DataSource;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.JdbcUpdateAffectedIncorrectNumberOfRowsException;
+import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
 /**
@@ -313,6 +318,201 @@ class SqlMapClientTests {
     testDao.afterPropertiesSet();
   }
 
+  // ---- SqlMapClientTemplate additional constructor / configuration tests ----
+
+  @Test
+  void testSqlMapClientTemplateConstructorWithSqlMapClient() {
+    SqlMapClient client = mock(SqlMapClient.class);
+    DataSource ds = mock(DataSource.class);
+    given(client.getDataSource()).willReturn(ds);
+    SqlMapClientTemplate template = new SqlMapClientTemplate(client);
+    assertEquals(client, template.getSqlMapClient());
+  }
+
+  @Test
+  void testSqlMapClientTemplateConstructorWithDataSourceAndSqlMapClient() {
+    DataSource ds = mock(DataSource.class);
+    SqlMapClient client = mock(SqlMapClient.class);
+    given(client.getDataSource()).willReturn(ds);
+    SqlMapClientTemplate template = new SqlMapClientTemplate(ds, client);
+    assertEquals(client, template.getSqlMapClient());
+    assertEquals(ds, template.getDataSource());
+  }
+
+  @Test
+  void testSqlMapClientTemplateAfterPropertiesSetWithoutSqlMapClient() {
+    SqlMapClientTemplate template = new SqlMapClientTemplate();
+    assertThrows(IllegalArgumentException.class, template::afterPropertiesSet);
+  }
+
+  @Test
+  void testSqlMapClientTemplateGetDataSourceFallsBackToClientDataSource() {
+    SqlMapClient client = mock(SqlMapClient.class);
+    DataSource clientDs = mock(DataSource.class);
+    given(client.getDataSource()).willReturn(clientDs);
+    SqlMapClientTemplate template = new SqlMapClientTemplate();
+    template.setSqlMapClient(client);
+    assertEquals(clientDs, template.getDataSource());
+  }
+
+  // ---- SqlMapClientTemplate execute() error-path tests ----
+
+  @Test
+  void testExecuteThrowsCannotGetJdbcConnectionExceptionOnConnectionFailure() throws SQLException {
+    DataSource ds = mock(DataSource.class);
+    SqlMapSession session = mock(SqlMapSession.class);
+    SqlMapClient client = mock(SqlMapClient.class);
+
+    given(client.openSession()).willReturn(session);
+    given(ds.getConnection()).willThrow(new SQLException("connection refused"));
+
+    SqlMapClientTemplate template = new SqlMapClientTemplate();
+    template.setDataSource(ds);
+    template.setSqlMapClient(client);
+    template.afterPropertiesSet();
+
+    assertThrows(CannotGetJdbcConnectionException.class, () -> template.execute(executor -> null));
+    verify(session).close();
+  }
+
+  @Test
+  void testExecuteWithTransactionAwareDataSource() throws SQLException {
+    DataSource targetDs = mock(DataSource.class);
+    Connection con = mock(Connection.class);
+    SqlMapSession session = mock(SqlMapSession.class);
+    SqlMapClient client = mock(SqlMapClient.class);
+
+    given(targetDs.getConnection()).willReturn(con);
+    given(client.openSession()).willReturn(session);
+
+    TransactionAwareDataSourceProxy ds = new TransactionAwareDataSourceProxy(targetDs);
+
+    SqlMapClientTemplate template = new SqlMapClientTemplate();
+    template.setDataSource(ds);
+    template.setSqlMapClient(client);
+    template.afterPropertiesSet();
+
+    Object result = template.execute(executor -> "done");
+    assertEquals("done", result);
+    verify(session).close();
+  }
+
+  @Test
+  void testExecuteTranslatesCallbackSqlException() throws SQLException {
+    DataSource ds = mock(DataSource.class);
+    Connection con = mock(Connection.class);
+    SqlMapSession session = mock(SqlMapSession.class);
+    SqlMapClient client = mock(SqlMapClient.class);
+
+    given(ds.getConnection()).willReturn(con);
+    given(client.openSession()).willReturn(session);
+
+    SqlMapClientTemplate template = new SqlMapClientTemplate();
+    template.setDataSource(ds);
+    template.setSqlMapClient(client);
+    template.afterPropertiesSet();
+
+    assertThrows(DataAccessException.class, () -> template.execute(executor -> {
+      throw new SQLException("query failed", "42000");
+    }));
+    verify(session).close();
+  }
+
+  // ---- Deprecated execute-with-typed-result delegates ----
+
+  @Test
+  @SuppressWarnings("deprecation")
+  void testExecuteWithListResult() {
+    List<String> expected = new ArrayList<>();
+    TestSqlMapClientTemplate template = new TestSqlMapClientTemplate();
+    List actual = template.executeWithListResult(executor -> expected);
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  void testExecuteWithMapResult() {
+    Map<String, String> expected = new HashMap<>();
+    TestSqlMapClientTemplate template = new TestSqlMapClientTemplate();
+    Map actual = template.executeWithMapResult(executor -> expected);
+    assertEquals(expected, actual);
+  }
+
+  // ---- Null-result guards in update/delete ----
+
+  @Test
+  void testUpdateReturnsZeroWhenExecuteReturnsNull() {
+    NullExecuteTemplate template = new NullExecuteTemplate();
+    assertEquals(0, template.update("myStatement"));
+    assertEquals(0, template.update("myStatement", "myParam"));
+  }
+
+  @Test
+  void testDeleteReturnsZeroWhenExecuteReturnsNull() {
+    NullExecuteTemplate template = new NullExecuteTemplate();
+    assertEquals(0, template.delete("myStatement"));
+    assertEquals(0, template.delete("myStatement", "myParam"));
+  }
+
+  // ---- SqlMapClientDaoSupport additional branch coverage ----
+
+  @Test
+  void testSqlMapClientDaoSupportExternalTemplateIgnoresSetDataSourceAndSetSqlMapClient() throws Exception {
+    SqlMapClientTemplate externalTemplate = mock(SqlMapClientTemplate.class);
+
+    SqlMapClientDaoSupport testDao = new SqlMapClientDaoSupport() {
+    };
+    testDao.setSqlMapClientTemplate(externalTemplate);
+
+    DataSource ds = mock(DataSource.class);
+    SqlMapClient client = mock(SqlMapClient.class);
+
+    testDao.setDataSource(ds);
+    testDao.setSqlMapClient(client);
+
+    verify(externalTemplate, never()).setDataSource(ds);
+    verify(externalTemplate, never()).setSqlMapClient(client);
+
+    assertEquals(externalTemplate, testDao.getSqlMapClientTemplate());
+  }
+
+  @Test
+  void testSqlMapClientDaoSupportCheckDaoConfigCallsInternalTemplateAfterPropertiesSet() throws Exception {
+    DataSource ds = mock(DataSource.class);
+    SqlMapClient client = mock(SqlMapClient.class);
+    given(client.getDataSource()).willReturn(ds);
+
+    SqlMapClientDaoSupport testDao = new SqlMapClientDaoSupport() {
+    };
+    testDao.setSqlMapClient(client);
+    assertNotNull(testDao.getSqlMapClientTemplate());
+    testDao.afterPropertiesSet();
+    assertEquals(client, testDao.getSqlMapClient());
+  }
+
+  @Test
+  void testExecuteConnectionCloseExceptionIsSwallowed() throws SQLException {
+    DataSource ds = mock(DataSource.class);
+    Connection con = mock(Connection.class);
+    SqlMapSession session = mock(SqlMapSession.class);
+    SqlMapClient client = mock(SqlMapClient.class);
+
+    given(ds.getConnection()).willReturn(con);
+    given(client.openSession()).willReturn(session);
+    // Make connection.close() throw so the catch(Throwable) path in execute() is exercised
+    willThrow(new RuntimeException("close failed")).given(con).close();
+
+    SqlMapClientTemplate template = new SqlMapClientTemplate();
+    template.setDataSource(ds);
+    template.setSqlMapClient(client);
+    template.afterPropertiesSet();
+
+    // The exception from close() must be swallowed (logged at debug level), not rethrown
+    Object result = template.execute(executor -> "done");
+    assertEquals("done", result);
+    verify(session).close();
+  }
+
   private static class TestSqlMapClientTemplate extends SqlMapClientTemplate {
 
     public SqlMapExecutor executor = mock(SqlMapExecutor.class);
@@ -324,6 +524,18 @@ class SqlMapClientTests {
       } catch (SQLException ex) {
         throw getExceptionTranslator().translate("SqlMapClient operation", null, ex);
       }
+    }
+  }
+
+  /**
+   * Template override whose {@code execute} always returns {@code null}; used to exercise the
+   * {@code result != null ? result : 0} guards in {@code update} and {@code delete}.
+   */
+  private static class NullExecuteTemplate extends SqlMapClientTemplate {
+
+    @Override
+    public <T> T execute(SqlMapClientCallback<T> action) throws DataAccessException {
+      return null;
     }
   }
 
