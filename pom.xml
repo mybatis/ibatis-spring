@@ -88,6 +88,13 @@
       <version>${mybatis2.version}</version>
       <scope>provided</scope>
     </dependency>
+    <!-- Spring Beans provides FactoryBean, InitializingBean -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>${spring.version}</version>
+      <scope>compile</scope>
+    </dependency>
     <!-- Spring JDBC provides JdbcAccessor, DataSourceUtils, LobHandler -->
     <dependency>
       <groupId>org.springframework</groupId>
