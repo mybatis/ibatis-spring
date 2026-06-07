@@ -8,7 +8,11 @@ ibatis spring
 
 ![mybatis](https://mybatis.org/images/mybatis-logo.png)
 
-The Mybatis 'ibatis-spring' module is a copy from spring 3.2.x as a shaded module in order to allow users using ibatis to 
-freely upgrade to spring4+ without having a hard dependency on upgrading ibatis in the process.
+The Mybatis 'ibatis-spring' module is a copy from spring 3.2.x in order to allow users using ibatis to 
+freely upgrade to spring4+ without having a hard dependency on upgrading ibatis in the process.  This is known working any 5.x up until latest 7.x as of 6/6/2026.
+
+Versions prior to 1.3.0 require java 8 and are for spring up to 5.
+Version 1.3.0 is for spring 5 specifically but modernized so it works up through spring 7 and requires java 11.
+Version 1.4.0 is for spring 6+ as it requires java 17.
 
 Consider upgrading to [MyBatis](https://github.com/mybatis/mybatis-3) with [MybatisSpring](https://github.com/mybatis/spring).
