@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BlobByteArrayTypeHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mybatis-2-spring</a> &gt; <a href="index.source.html" class="el_package">org.springframework.orm.ibatis.support</a> &gt; <span class="el_source">BlobByteArrayTypeHandler.java</span></div><h1>BlobByteArrayTypeHandler.java</h1><pre class="source lang-java linenums">/*
+ * SPDX-License-Identifier: Apache-2.0
+ * See LICENSE file for details.
+ *
+ * Copyright 2015-2026 the original author or authors.
+ */
+package org.springframework.orm.ibatis.support;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.springframework.jdbc.support.lob.LobCreator;
+import org.springframework.jdbc.support.lob.LobHandler;
+
+/**
+ * iBATIS TypeHandler implementation for byte arrays that get mapped to BLOBs. Retrieves the LobHandler to use from
+ * SqlMapClientFactoryBean at config time.
+ * &lt;p&gt;
+ * Can also be defined in generic iBATIS mappings, as DefaultLobCreator will work with most JDBC-compliant database
+ * drivers. In this case, the field type does not have to be BLOB: For databases like MySQL and MS SQL Server, any large
+ * enough binary type will work.
+ *
+ * @author Juergen Hoeller
+ *
+ * @since 1.1.5
+ *
+ * @see org.springframework.orm.ibatis.SqlMapClientFactoryBean#setLobHandler
+ *
+ * @deprecated as of Spring 3.2, in favor of the native Spring support in the Mybatis follow-up project
+ *             (https://mybatis.org/)
+ */
+@Deprecated
+public class BlobByteArrayTypeHandler extends AbstractLobTypeHandler {
+
+  /**
+   * Constructor used by iBATIS: fetches config-time LobHandler from SqlMapClientFactoryBean.
+   *
+   * @see org.springframework.orm.ibatis.SqlMapClientFactoryBean#getConfigTimeLobHandler
+   */
+  public BlobByteArrayTypeHandler() {
+<span class="nc" id="L42">    super();</span>
+<span class="nc" id="L43">  }</span>
+
+  /**
+   * Constructor used for testing: takes an explicit LobHandler.
+   *
+   * @param lobHandler
+   *          the LobHandler to use
+   */
+  protected BlobByteArrayTypeHandler(LobHandler lobHandler) {
+<span class="fc" id="L52">    super(lobHandler);</span>
+<span class="fc" id="L53">  }</span>
+
+  @Override
+  protected void setParameterInternal(PreparedStatement ps, int index, Object value, String jdbcType,
+      LobCreator lobCreator) throws SQLException {
+<span class="fc" id="L58">    lobCreator.setBlobAsBytes(ps, index, (byte[]) value);</span>
+<span class="fc" id="L59">  }</span>
+
+  @Override
+  protected Object getResultInternal(ResultSet rs, int index, LobHandler lobHandler) throws SQLException {
+<span class="fc" id="L63">    return lobHandler.getBlobAsBytes(rs, index);</span>
+  }
+
+  @Override
+  public Object valueOf(String s) {
+<span class="fc" id="L68">    return s.getBytes();</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

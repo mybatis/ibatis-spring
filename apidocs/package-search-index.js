@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html","k":"18"},{"l":"org.ibatis.spring"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html","k":"18"},{"l":"org.ibatis.spring"},{"l":"org.springframework.orm.ibatis"},{"l":"org.springframework.orm.ibatis.support"}];updateSearchResults();

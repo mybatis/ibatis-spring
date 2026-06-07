@@ -1,1 +1,3 @@
 org.ibatis.spring
+org.springframework.orm.ibatis
+org.springframework.orm.ibatis.support

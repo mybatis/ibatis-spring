@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SqlMapClientDaoSupport.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mybatis-2-spring</a> &gt; <a href="index.source.html" class="el_package">org.springframework.orm.ibatis.support</a> &gt; <span class="el_source">SqlMapClientDaoSupport.java</span></div><h1>SqlMapClientDaoSupport.java</h1><pre class="source lang-java linenums">/*
+ * SPDX-License-Identifier: Apache-2.0
+ * See LICENSE file for details.
+ *
+ * Copyright 2015-2026 the original author or authors.
+ */
+package org.springframework.orm.ibatis.support;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+import javax.sql.DataSource;
+
+import org.springframework.dao.support.DaoSupport;
+import org.springframework.orm.ibatis.SqlMapClientTemplate;
+import org.springframework.util.Assert;
+
+/**
+ * Convenient super class for iBATIS SqlMapClient data access objects. Requires a SqlMapClient to be set, providing a
+ * SqlMapClientTemplate based on it to subclasses.
+ * &lt;p&gt;
+ * Instead of a plain SqlMapClient, you can also pass a preconfigured SqlMapClientTemplate instance in. This allows you
+ * to share your SqlMapClientTemplate configuration for all your DAOs, for example a custom SQLExceptionTranslator to
+ * use.
+ *
+ * @author Juergen Hoeller
+ *
+ * @since 24.02.2004
+ *
+ * @see #setSqlMapClient
+ * @see #setSqlMapClientTemplate
+ * @see org.springframework.orm.ibatis.SqlMapClientTemplate
+ * @see org.springframework.orm.ibatis.SqlMapClientTemplate#setExceptionTranslator
+ *
+ * @deprecated as of Spring 3.2, in favor of the native Spring support in the Mybatis follow-up project
+ *             (https://mybatis.org/)
+ */
+@Deprecated
+<span class="fc" id="L38">public abstract class SqlMapClientDaoSupport extends DaoSupport {</span>
+
+<span class="fc" id="L40">  private SqlMapClientTemplate sqlMapClientTemplate = new SqlMapClientTemplate();</span>
+
+<span class="fc" id="L42">  private boolean externalTemplate = false;</span>
+
+  /**
+   * Set the JDBC DataSource to be used by this DAO. Not required: The SqlMapClient might carry a shared DataSource.
+   *
+   * @param dataSource
+   *          the DataSource to use
+   *
+   * @see #setSqlMapClient
+   */
+  public final void setDataSource(DataSource dataSource) {
+<span class="fc bfc" id="L53" title="All 2 branches covered.">    if (!this.externalTemplate) {</span>
+<span class="fc" id="L54">      this.sqlMapClientTemplate.setDataSource(dataSource);</span>
+    }
+<span class="fc" id="L56">  }</span>
+
+  /**
+   * Return the JDBC DataSource used by this DAO.
+   *
+   * @return the DataSource
+   */
+  public final DataSource getDataSource() {
+<span class="fc" id="L64">    return this.sqlMapClientTemplate.getDataSource();</span>
+  }
+
+  /**
+   * Set the iBATIS Database Layer SqlMapClient to work with. Either this or a &quot;sqlMapClientTemplate&quot; is required.
+   *
+   * @param sqlMapClient
+   *          the SqlMapClient to use
+   *
+   * @see #setSqlMapClientTemplate
+   */
+  public final void setSqlMapClient(SqlMapClient sqlMapClient) {
+<span class="fc bfc" id="L76" title="All 2 branches covered.">    if (!this.externalTemplate) {</span>
+<span class="fc" id="L77">      this.sqlMapClientTemplate.setSqlMapClient(sqlMapClient);</span>
+    }
+<span class="fc" id="L79">  }</span>
+
+  /**
+   * Return the iBATIS Database Layer SqlMapClient that this template works with.
+   *
+   * @return the SqlMapClient
+   */
+  public final SqlMapClient getSqlMapClient() {
+<span class="fc" id="L87">    return this.sqlMapClientTemplate.getSqlMapClient();</span>
+  }
+
+  /**
+   * Set the SqlMapClientTemplate for this DAO explicitly, as an alternative to specifying a SqlMapClient.
+   *
+   * @param sqlMapClientTemplate
+   *          the SqlMapClientTemplate to use
+   *
+   * @see #setSqlMapClient
+   */
+  public final void setSqlMapClientTemplate(SqlMapClientTemplate sqlMapClientTemplate) {
+<span class="fc" id="L99">    Assert.notNull(sqlMapClientTemplate, &quot;SqlMapClientTemplate must not be null&quot;);</span>
+<span class="fc" id="L100">    this.sqlMapClientTemplate = sqlMapClientTemplate;</span>
+<span class="fc" id="L101">    this.externalTemplate = true;</span>
+<span class="fc" id="L102">  }</span>
+
+  /**
+   * Return the SqlMapClientTemplate for this DAO, pre-initialized with the SqlMapClient or set explicitly.
+   *
+   * @return the SqlMapClientTemplate
+   */
+  public final SqlMapClientTemplate getSqlMapClientTemplate() {
+<span class="fc" id="L110">    return this.sqlMapClientTemplate;</span>
+  }
+
+  @Override
+  protected final void checkDaoConfig() {
+<span class="fc bfc" id="L115" title="All 2 branches covered.">    if (!this.externalTemplate) {</span>
+<span class="fc" id="L116">      this.sqlMapClientTemplate.afterPropertiesSet();</span>
+    }
+<span class="fc" id="L118">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

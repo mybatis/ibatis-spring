@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractLobTypeHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mybatis-2-spring</a> &gt; <a href="index.source.html" class="el_package">org.springframework.orm.ibatis.support</a> &gt; <span class="el_source">AbstractLobTypeHandler.java</span></div><h1>AbstractLobTypeHandler.java</h1><pre class="source lang-java linenums">/*
+ * SPDX-License-Identifier: Apache-2.0
+ * See LICENSE file for details.
+ *
+ * Copyright 2015-2026 the original author or authors.
+ */
+package org.springframework.orm.ibatis.support;
+
+import com.ibatis.sqlmap.engine.type.BaseTypeHandler;
+
+import java.io.IOException;
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.support.lob.LobCreator;
+import org.springframework.jdbc.support.lob.LobHandler;
+import org.springframework.orm.ibatis.SqlMapClientFactoryBean;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+/**
+ * Abstract base class for iBATIS TypeHandler implementations that map to LOBs. Retrieves the LobHandler to use from
+ * SqlMapClientFactoryBean at config time.
+ * &lt;p&gt;
+ * For writing LOBs, an active Spring transaction synchronization is required, to be able to register a synchronization
+ * that closes the LobCreator.
+ * &lt;p&gt;
+ * Offers template methods for setting parameters and getting result values, passing in the LobHandler or LobCreator to
+ * use.
+ *
+ * @author Juergen Hoeller
+ *
+ * @since 1.1.5
+ *
+ * @see org.springframework.jdbc.support.lob.LobHandler
+ * @see org.springframework.jdbc.support.lob.LobCreator
+ * @see org.springframework.orm.ibatis.SqlMapClientFactoryBean#setLobHandler
+ *
+ * @deprecated as of Spring 3.2, in favor of the native Spring support in the Mybatis follow-up project
+ *             (https://mybatis.org/)
+ */
+@Deprecated
+public abstract class AbstractLobTypeHandler extends BaseTypeHandler {
+
+  /**
+   * Order value for TransactionSynchronization objects that clean up LobCreators. Return
+   * DataSourceUtils.CONNECTION_SYNCHRONIZATION_ORDER - 200 to execute LobCreator cleanup before JDBC Connection
+   * cleanup, if any.
+   *
+   * @see org.springframework.jdbc.datasource.DataSourceUtils#CONNECTION_SYNCHRONIZATION_ORDER
+   */
+  public static final int LOB_CREATOR_SYNCHRONIZATION_ORDER = DataSourceUtils.CONNECTION_SYNCHRONIZATION_ORDER - 200;
+
+  private final LobHandler lobHandler;
+
+  /**
+   * Constructor used by iBATIS: fetches config-time LobHandler from SqlMapClientFactoryBean.
+   *
+   * @see org.springframework.orm.ibatis.SqlMapClientFactoryBean#getConfigTimeLobHandler
+   */
+  public AbstractLobTypeHandler() {
+<span class="nc" id="L65">    this(SqlMapClientFactoryBean.getConfigTimeLobHandler());</span>
+<span class="nc" id="L66">  }</span>
+
+  /**
+   * Constructor used for testing: takes an explicit LobHandler.
+   *
+   * @param lobHandler
+   *          the LobHandler to use
+   */
+<span class="fc" id="L74">  protected AbstractLobTypeHandler(LobHandler lobHandler) {</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">    if (lobHandler == null) {</span>
+<span class="fc" id="L76">      throw new IllegalStateException(</span>
+          &quot;No LobHandler found for configuration - &quot; + &quot;lobHandler property must be set on SqlMapClientFactoryBean&quot;);
+    }
+<span class="fc" id="L79">    this.lobHandler = lobHandler;</span>
+<span class="fc" id="L80">  }</span>
+
+  /**
+   * This implementation delegates to setParameterInternal, passing in a transaction-synchronized LobCreator for the
+   * LobHandler of this type.
+   *
+   * @see #setParameterInternal
+   */
+  @Override
+  public final void setParameter(PreparedStatement ps, int i, Object parameter, String jdbcType) throws SQLException {
+<span class="fc bfc" id="L90" title="All 2 branches covered.">    if (!TransactionSynchronizationManager.isSynchronizationActive()) {</span>
+<span class="fc" id="L91">      throw new IllegalStateException(&quot;Spring transaction synchronization needs to be active for &quot;</span>
+          + &quot;setting values in iBATIS TypeHandlers that delegate to a Spring LobHandler&quot;);
+    }
+<span class="fc" id="L94">    final LobCreator lobCreator = this.lobHandler.getLobCreator();</span>
+    try {
+<span class="fc" id="L96">      setParameterInternal(ps, i, parameter, jdbcType, lobCreator);</span>
+<span class="fc" id="L97">    } catch (IOException ex) {</span>
+<span class="fc" id="L98">      throw new SQLException(&quot;I/O errors during LOB access: &quot; + ex.getMessage());</span>
+<span class="fc" id="L99">    }</span>
+
+<span class="fc" id="L101">    TransactionSynchronizationManager.registerSynchronization(new LobCreatorSynchronization(lobCreator));</span>
+<span class="fc" id="L102">  }</span>
+
+  /**
+   * This implementation delegates to the getResult version that takes a column index.
+   *
+   * @see #getResult(java.sql.ResultSet, String)
+   * @see java.sql.ResultSet#findColumn
+   */
+  @Override
+  public final Object getResult(ResultSet rs, String columnName) throws SQLException {
+<span class="fc" id="L112">    return getResult(rs, rs.findColumn(columnName));</span>
+  }
+
+  /**
+   * This implementation delegates to getResultInternal, passing in the LobHandler of this type.
+   *
+   * @see #getResultInternal
+   */
+  @Override
+  public final Object getResult(ResultSet rs, int columnIndex) throws SQLException {
+    try {
+<span class="fc" id="L123">      return getResultInternal(rs, columnIndex, this.lobHandler);</span>
+<span class="fc" id="L124">    } catch (IOException ex) {</span>
+<span class="fc" id="L125">      throw new SQLException(&quot;I/O errors during LOB access: &quot; + ex.getClass().getName() + &quot;: &quot; + ex.getMessage());</span>
+    }
+  }
+
+  /**
+   * This implementation always throws a SQLException: retrieving LOBs from a CallableStatement is not supported.
+   */
+  @Override
+  public Object getResult(CallableStatement cs, int columnIndex) throws SQLException {
+<span class="fc" id="L134">    throw new SQLException(&quot;Retrieving LOBs from a CallableStatement is not supported&quot;);</span>
+  }
+
+  /**
+   * Template method to set the given value on the given statement.
+   *
+   * @param ps
+   *          the PreparedStatement to set on
+   * @param index
+   *          the statement parameter index
+   * @param value
+   *          the parameter value to set
+   * @param jdbcType
+   *          the JDBC type of the parameter (as supplied by iBATIS)
+   * @param lobCreator
+   *          the LobCreator to use
+   *
+   * @throws SQLException
+   *           if thrown by JDBC methods
+   * @throws IOException
+   *           if thrown by streaming methods
+   */
+  protected abstract void setParameterInternal(PreparedStatement ps, int index, Object value, String jdbcType,
+      LobCreator lobCreator) throws SQLException, IOException;
+
+  /**
+   * Resolve the JDBC type name as passed in to
+   * {@link #setParameterInternal(PreparedStatement, int, Object, String, LobCreator)}.
+   * &lt;p&gt;
+   * Subclasses may use this method to normalize or validate the provided JDBC type before applying it to the underlying
+   * {@link PreparedStatement}.
+   *
+   * @param jdbcType
+   *          the JDBC type of the parameter, as provided by iBATIS
+   *
+   * @return the resolved JDBC type (never {@code null}, empty if no type specified)
+   */
+  protected String resolveJdbcType(String jdbcType) {
+<span class="fc bfc" id="L172" title="All 2 branches covered.">    return (jdbcType != null ? jdbcType : &quot;&quot;);</span>
+  }
+
+  /**
+   * Template method to extract a value from the given result set.
+   *
+   * @param rs
+   *          the ResultSet to extract from
+   * @param index
+   *          the index in the ResultSet
+   * @param lobHandler
+   *          the LobHandler to use
+   *
+   * @return the extracted value
+   *
+   * @throws SQLException
+   *           if thrown by JDBC methods
+   * @throws IOException
+   *           if thrown by streaming methods
+   */
+  protected abstract Object getResultInternal(ResultSet rs, int index, LobHandler lobHandler)
+      throws SQLException, IOException;
+
+  /**
+   * Callback for resource cleanup at the end of a Spring transaction. Invokes LobCreator.close to clean up temporary
+   * LOBs that might have been created.
+   *
+   * @see org.springframework.jdbc.support.lob.LobCreator#close
+   */
+  private static class LobCreatorSynchronization implements TransactionSynchronization {
+
+    private final LobCreator lobCreator;
+
+<span class="fc" id="L205">    public LobCreatorSynchronization(LobCreator lobCreator) {</span>
+<span class="fc" id="L206">      this.lobCreator = lobCreator;</span>
+<span class="fc" id="L207">    }</span>
+
+    @Override
+    public int getOrder() {
+<span class="fc" id="L211">      return LOB_CREATOR_SYNCHRONIZATION_ORDER;</span>
+    }
+
+    @Override
+    public void beforeCompletion() {
+<span class="fc" id="L216">      this.lobCreator.close();</span>
+<span class="fc" id="L217">    }</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
