@@ -67,7 +67,7 @@
 
     <clirr.comparisonVersion>1.3.0</clirr.comparisonVersion>
 
-    <commons-logging.version>1.3.6</commons-logging.version>
+    <commons-logging.version>1.4.0</commons-logging.version>
     <mybatis2.version>2.8.0</mybatis2.version>
     <spring.version>7.0.8</spring.version>
 
