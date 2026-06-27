@@ -74,7 +74,7 @@
     <module.name>org.mybatis.spring.mybatis2</module.name>
 
     <!-- OSGi: export ibatis integration packages -->
-    <osgi.export>org.ibatis.spring.*;version=1.2.3-SNAPSHOT;-noimport:=true,org.springframework.orm.ibatis.*;version=1.2.3-SNAPSHOT;-noimport:=true</osgi.export>
+    <osgi.export>org.ibatis.spring.*;version=${project.version};-noimport:=true,org.springframework.orm.ibatis.*;version=${project.version};-noimport:=true</osgi.export>
 
     <!-- Reproducible Builds -->
     <project.build.outputTimestamp>1780798456</project.build.outputTimestamp>
